@@ -1,0 +1,95 @@
+﻿@model UploadFiles_SaveIn_App__UsingJQueryAlso.Models.Employee
+
+@{
+    ViewBag.Title = "SaveEmployee";
+}
+
+<h2>SaveEmployee</h2>
+
+
+<div class="row">
+    <div class="col-md-10">
+        @using (Html.BeginForm("SaveEmployee", "Employee", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+        {
+            @*<input type="file" name="file" />*@
+
+            @Html.TextBoxFor(x => x.Name)
+            @Html.TextBoxFor(x => x.file, new { @type = "file" , multiple = "multiple" })
+            @*<input type="file" id="files" name="files" multiple><br><br>*@
+            @*<input type="button" id="btnUpload" value="Upload Files" />*@
+            <br />
+            <input type="submit" value="Save" id="btnUpload"/>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script>
+
+$(document).ready(function(){
+    $('#btnUpload').click(function () {
+
+        // Checking whether FormData is available in browser
+        //if (window.FormData !== undefined) {
+
+            //var fileUpload = $("#file").get(0);
+            //console.log(fileUpload);
+
+            //var files = fileUpload.files;
+            //console.log(files);
+
+            // Create FormData object
+            var fileUpload = $("#file").get(0).files;
+            var fileData = new FormData();
+          
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                //fileData.append(files[i].name, files[i]);
+                fileData.append("file", files[i]);
+            }
+
+            // Adding one more key to FormData object
+            //fileData.append('username', 'mittal');
+
+            $.ajax({
+                url: '/Employee/SaveEmployee',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,               
+                success: function (result) {
+                    alert(result);
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        //} else {
+        //    alert("FormData is not supported.");
+        //}
+    });
+});
+</script>  
+}
+
+
+@*The FormData interface provides a way to easily construct a set of key/value pairs representing form fields and their values,
+which can then be easily sent using the XMLHttpRequest.send() method. It uses the same format a form would use\
+if the encoding type were set to "multipart/form-data".
+
+We can create FormData objects like var tempObject = new FormData();
+
+It contains the following methods:
+FormData.append(): It appends a new value to FormData object. If key is not exists then creates a new key.
+FormData.delete(): It deletes a key-value pair from object.
+FormData.entries(): It helps to iterate over all key-value pairs present in object.
+FormData.get(): It returns value of given key within FormData object.
+FromData.has(): It returns a Boolean value whether a given key is present inside object.
+FormData.keys(): It helps to get all keys present inside object.
+FormData.set(): It helps to set/update a new value to existing keys or add new key-value pair if doesn’t exist.
+FormData.values(): Returns an iterator allowing to go through all values of the key/value pairs contained in this object.
+In this way FormData helps to send files, value to server through AJAX request. However, one disadvantage is old browsers doesn’t \
+support FormData object and its methods.*@
